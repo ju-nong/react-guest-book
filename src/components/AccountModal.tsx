@@ -1,5 +1,11 @@
 import React from "react";
 import styled from "@emotion/styled";
+import { authService } from "../firebase";
+import {
+    GoogleAuthProvider,
+    GithubAuthProvider,
+    signInWithPopup,
+} from "firebase/auth";
 
 const AccountModalStyled = styled.div`
     position: relative;
@@ -82,6 +88,18 @@ const GithubAccountButtonStyled = styled.button`
 `;
 
 function AccountModal() {
+    async function handleAccountClick(social: "google" | "github") {
+        let provider = null;
+
+        if (social === "google") {
+            provider = new GoogleAuthProvider();
+        } else {
+            provider = new GithubAuthProvider();
+        }
+
+        await signInWithPopup(authService, provider);
+    }
+
     return (
         <AccountModalStyled>
             <TitleStyled>react-guest-book</TitleStyled>
@@ -89,11 +107,15 @@ function AccountModal() {
                 방명록을 사용하시려면 로그인을 해주세요.
             </DescriptionStyled>
             <ButtonContainerStyled>
-                <GoogleAccountButtonStyled>
+                <GoogleAccountButtonStyled
+                    onClick={() => handleAccountClick("google")}
+                >
                     <img src="/images/google-logo.png" alt="Google Logo" />
                     Sign in with Google
                 </GoogleAccountButtonStyled>
-                <GithubAccountButtonStyled>
+                <GithubAccountButtonStyled
+                    onClick={() => handleAccountClick("github")}
+                >
                     <img src="/images/github-logo.png" alt="Github Logo" />
                     Sign in with Github
                 </GithubAccountButtonStyled>

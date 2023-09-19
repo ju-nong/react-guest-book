@@ -7,17 +7,28 @@ import { AccountModal } from "./components";
 
 function App() {
     const [isLogin, setIsLogin] = useState(false);
+    const [isLoaded, setIsLoaded] = useState(false);
 
     useEffect(() => {
         onAuthStateChanged(authService, (user) => {
+            console.log(user);
+
             setIsLogin(!!user);
+            setIsLoaded(true);
         });
     }, []);
 
     return (
         <>
-            Hello World!
-            <AccountModal />
+            {isLoaded ? (
+                isLogin ? (
+                    <p>어서오세요</p>
+                ) : (
+                    <AccountModal />
+                )
+            ) : (
+                <p>로딩 중</p>
+            )}
         </>
     );
 }
