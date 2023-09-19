@@ -103,7 +103,7 @@ function AccountModal() {
         <AccountModalStyled>
             <TitleStyled>react-guest-book</TitleStyled>
             <DescriptionStyled>
-                방명록을 사용하시려면 로그인을 해주세요.
+                방명록을 이용하시려면 로그인을 해주세요.
             </DescriptionStyled>
             <ButtonContainerStyled>
                 <GoogleAccountButtonStyled
