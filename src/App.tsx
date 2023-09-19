@@ -1,20 +1,19 @@
 import { useState, useEffect } from "react";
 
 import { authService } from "./firebase";
-import { onAuthStateChanged } from "firebase/auth";
+import { onAuthStateChanged, User } from "firebase/auth";
 
-import { AccountModal } from "./components";
+import { AccountModal, ChatContainer } from "./components";
 
 function App() {
-    // Vercel 환경변수 추가
-    const [isLogin, setIsLogin] = useState(false);
     const [isLoaded, setIsLoaded] = useState(false);
+    const [userState, setUserState] = useState<User | null>(null);
 
     useEffect(() => {
-        onAuthStateChanged(authService, (user) => {
+        onAuthStateChanged(authService, (user: User | null) => {
             console.log(user);
 
-            setIsLogin(!!user);
+            setUserState(user);
             setIsLoaded(true);
         });
     }, []);
@@ -22,8 +21,8 @@ function App() {
     return (
         <>
             {isLoaded ? (
-                isLogin ? (
-                    <p>어서오세요</p>
+                !!userState ? (
+                    <ChatContainer user={userState} />
                 ) : (
                     <AccountModal />
                 )
