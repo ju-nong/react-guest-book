@@ -1,27 +1,12 @@
-# React + TypeScript + Vite
+# react-guest-book
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+React와 Firebase를 이용한 방명록 사이트
 
-Currently, two official plugins are available:
+## 알게된 점
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-   parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-   },
-```
-
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+-   Vercel에서 환경변수를 추가할 수 있다.
+    (Dashboard -> Settings > Environment Variables)
+    env에 등록되어 있는 환경변수명과 똑같이 등록하면 된다.
+-   Authentication 카테고리에서 소셜 로그인 기능을 등록하여 사용할 수 있다.
+    Github을 사용하려면, 클라이언트 ID와 보안 비밀번호가 필요하다.
+    (Github Profile -> Settings -> Developer settings -> OAuth Apps)
