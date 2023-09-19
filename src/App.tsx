@@ -6,6 +6,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { AccountModal } from "./components";
 
 function App() {
+    // Vercel 환경변수 추가
     const [isLogin, setIsLogin] = useState(false);
     const [isLoaded, setIsLoaded] = useState(false);
 
