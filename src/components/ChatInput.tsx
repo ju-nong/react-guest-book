@@ -14,7 +14,7 @@ function ChatInput() {
     async function handleKeyDown(event: KeyboardEvent<HTMLInputElement>) {
         const { value: text } = event.target as HTMLInputElement;
 
-        if (event.key === "Enter" && text) {
+        if (event.key === "Enter" && text && !event.nativeEvent.isComposing) {
             const { currentUser } = authService;
             (event.target as HTMLInputElement).value = "";
 
