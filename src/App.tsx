@@ -12,8 +12,6 @@ function App() {
 
     useEffect(() => {
         onAuthStateChanged(authService, (user: User | null) => {
-            // console.log(user);
-
             setIsLogin(!!user);
             setIsLoaded(true);
 
