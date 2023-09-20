@@ -1,13 +1,18 @@
 import styled from "@emotion/styled";
 
+import dayjs from "dayjs";
+
 import { Chat } from "../types";
+import { Timestamp } from "firebase/firestore";
 
 const ChatItemStyled = styled.li`
     width: 100%;
+    max-width: 397px;
     padding-left: 32px;
     display: flex;
     position: relative;
     column-gap: 6px;
+    align-items: flex-end;
 
     &.first {
         margin-top: 16px;
@@ -30,6 +35,8 @@ const ChatItemStyled = styled.li`
         line-height: 12px;
         font-size: 10px;
         color: rgb(118, 118, 120);
+        margin-bottom: 4px;
+        white-space: nowrap;
     }
 `;
 
@@ -67,17 +74,20 @@ type ChatItemProps = {
     afterChat: Chat | null;
 };
 
-function ChatItem({ chat, beforeChat }: ChatItemProps) {
-    let isFirst = beforeChat === null;
-    const { email, text, name, profile } = chat;
+const formatDate = (timestamp: Timestamp) =>
+    dayjs(timestamp.toDate()).format("A h:mm");
 
-    if (beforeChat) {
-        isFirst = email !== beforeChat.email;
-    }
+function ChatItem({ chat, beforeChat, afterChat }: ChatItemProps) {
+    const { email, text, name, profile, createAt } = chat;
+    const formatCreateAt = formatDate(createAt);
+
+    const showProfile = beforeChat === null || email !== beforeChat.email;
+    const showDate =
+        afterChat === null || formatCreateAt !== formatDate(afterChat.createAt);
 
     return (
-        <ChatItemStyled className={isFirst ? "first" : ""}>
-            {isFirst ? (
+        <ChatItemStyled className={showProfile ? "first" : ""}>
+            {showProfile ? (
                 <ProfileStyled>
                     <button>
                         <img
@@ -89,6 +99,7 @@ function ChatItem({ chat, beforeChat }: ChatItemProps) {
                 </ProfileStyled>
             ) : null}
             <p>{text}</p>
+            {showDate ? <span>{formatCreateAt}</span> : null}
         </ChatItemStyled>
     );
 }
