@@ -10,3 +10,7 @@ React와 Firebase를 이용한 방명록 사이트
 -   Authentication 카테고리에서 소셜 로그인 기능을 등록하여 사용할 수 있다.
     Github을 사용하려면, 클라이언트 ID와 보안 비밀번호가 필요하다.
     (Github Profile -> Settings -> Developer settings -> OAuth Apps)
+
+## 참고
+
+-   https://healingprocess.tistory.com/44
