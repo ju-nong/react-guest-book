@@ -1,7 +1,9 @@
 import { useEffect, useState, useRef } from "react";
 
+import styled from "@emotion/styled";
+import { ChatItem } from ".";
+
 import {
-    Timestamp,
     getFirestore,
     query,
     collection,
@@ -14,14 +16,15 @@ import {
     DocumentData,
 } from "firebase/firestore";
 
-type Chat = {
-    id: string;
-    createAt: Timestamp;
-    email: string;
-    name: string;
-    profile: string;
-    text: string;
-};
+import { Chat } from "../types";
+
+const ChatListStyled = styled.ul`
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    row-gap: 4px;
+    list-style: none;
+`;
 
 type QueryType = "basic" | "before";
 
@@ -123,14 +126,19 @@ function ChatList() {
     }
 
     return (
-        <ul>
+        <>
             <button onClick={getBeforeChat}>이전꺼</button>
-            {chats.map((chat) => (
-                <li key={chat.id}>
-                    {chat.name}: {chat.text}
-                </li>
-            ))}
-        </ul>
+            <ChatListStyled>
+                {chats.map((chat, index) => (
+                    <ChatItem
+                        key={chat.id}
+                        chat={chat}
+                        beforeChat={chats[index - 1] || null}
+                        afterChat={chats[index + 1] || null}
+                    />
+                ))}
+            </ChatListStyled>
+        </>
     );
 }
 
