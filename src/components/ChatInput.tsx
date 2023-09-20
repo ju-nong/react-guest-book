@@ -38,6 +38,8 @@ function ChatInput() {
                     console.log(error);
                 }
             }
+
+            (event.target as HTMLInputElement).value = "";
         }
     }
 
