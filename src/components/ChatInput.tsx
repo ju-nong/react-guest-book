@@ -12,8 +12,11 @@ function ChatInput() {
     const db = getFirestore();
 
     async function handleKeyDown(event: KeyboardEvent<HTMLInputElement>) {
-        if (event.key === "Enter") {
+        const { value: text } = event.target as HTMLInputElement;
+
+        if (event.key === "Enter" && text) {
             const { currentUser } = authService;
+            (event.target as HTMLInputElement).value = "";
 
             if (currentUser) {
                 try {
@@ -23,23 +26,18 @@ function ChatInput() {
                         email,
                         photoURL: profile,
                     } = currentUser;
-                    const { value: text } = event.target as HTMLInputElement;
 
-                    const docRef = await addDoc(collection(db, "chat"), {
+                    await addDoc(collection(db, "chat"), {
                         createAt,
                         email,
                         name,
                         profile,
                         text,
                     });
-
-                    console.log("Document written with ID: ", docRef.id);
                 } catch (error) {
                     console.log(error);
                 }
             }
-
-            (event.target as HTMLInputElement).value = "";
         }
     }
 
