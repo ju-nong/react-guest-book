@@ -45,7 +45,13 @@ function ChatInput() {
         }
     }
 
-    return <InputStyled type="text" onKeyDown={handleKeyDown} />;
+    return (
+        <InputStyled
+            type="text"
+            placeholder="입력하고 Enter 치셈"
+            onKeyDown={handleKeyDown}
+        />
+    );
 }
 
 export { ChatInput };
