@@ -12,7 +12,7 @@ function ChatInput() {
     const db = getFirestore();
 
     async function handleKeyDown(event: KeyboardEvent<HTMLInputElement>) {
-        if (!event.nativeEvent.isComposing) {
+        if (event.nativeEvent.isComposing) {
             return;
         }
 
