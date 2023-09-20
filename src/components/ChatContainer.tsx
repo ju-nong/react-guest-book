@@ -1,6 +1,3 @@
-import {} from "react";
-import styled from "@emotion/styled";
-
 import { ChatList, ChatInput } from ".";
 
 function ChatContainer() {
