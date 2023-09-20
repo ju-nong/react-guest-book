@@ -20,6 +20,7 @@ import { Chat } from "../types";
 
 const ChatListStyled = styled.ul`
     width: 100%;
+    min-width: 320px;
     display: flex;
     flex-direction: column;
     row-gap: 4px;
