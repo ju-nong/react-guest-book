@@ -1,16 +1,17 @@
-import { User } from "firebase/auth";
+import {} from "react";
+import styled from "@emotion/styled";
 
-type ChatContainerProps = {
-    user: User | null;
-};
+import { authService } from "../firebase";
+import { getFirestore, collection, addDoc } from "firebase/firestore";
+import { ChatInput } from ".";
 
-function ChatContainer({ user }: ChatContainerProps) {
-    console.log(user);
+function ChatContainer() {
+    const db = getFirestore();
 
     return (
         <div>
-            어서오세요
             <ul></ul>
+            <ChatInput />
         </div>
     );
 }
