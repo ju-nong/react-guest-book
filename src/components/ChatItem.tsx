@@ -1,7 +1,4 @@
-import React from "react";
 import styled from "@emotion/styled";
-
-import dayjs from "dayjs";
 
 import { Chat } from "../types";
 
@@ -70,7 +67,7 @@ type ChatItemProps = {
     afterChat: Chat | null;
 };
 
-function ChatItem({ chat, beforeChat, afterChat }: ChatItemProps) {
+function ChatItem({ chat, beforeChat }: ChatItemProps) {
     let isFirst = beforeChat === null;
     const { email, text, name, profile } = chat;
 
