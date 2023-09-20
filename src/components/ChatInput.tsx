@@ -12,9 +12,13 @@ function ChatInput() {
     const db = getFirestore();
 
     async function handleKeyDown(event: KeyboardEvent<HTMLInputElement>) {
+        if (!event.nativeEvent.isComposing) {
+            return;
+        }
+
         const { value: text } = event.target as HTMLInputElement;
 
-        if (event.key === "Enter" && text && !event.nativeEvent.isComposing) {
+        if (event.key === "Enter" && text) {
             const { currentUser } = authService;
             (event.target as HTMLInputElement).value = "";
 
