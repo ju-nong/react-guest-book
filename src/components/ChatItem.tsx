@@ -1,13 +1,13 @@
 import styled from "@emotion/styled";
 
 import dayjs from "dayjs";
+import { authService } from "../firebase";
 
 import { Chat } from "../types";
 import { Timestamp } from "firebase/firestore";
 
 const ChatItemStyled = styled.li`
     width: 100%;
-    max-width: 397px;
     padding-left: 32px;
     display: flex;
     position: relative;
@@ -19,7 +19,25 @@ const ChatItemStyled = styled.li`
         padding-top: 16px;
     }
 
+    &.mine {
+        padding-left: 0px;
+        justify-content: flex-end;
+
+        > div {
+            display: none;
+        }
+
+        > p {
+            order: 2;
+        }
+
+        > span {
+            order: 1;
+        }
+    }
+
     > p {
+        max-width: 565px;
         padding: 9px 12px;
         font-size: 13px;
         line-height: 16px;
@@ -84,9 +102,12 @@ function ChatItem({ chat, beforeChat, afterChat }: ChatItemProps) {
     const showProfile = beforeChat === null || email !== beforeChat.email;
     const showDate =
         afterChat === null || formatCreateAt !== formatDate(afterChat.createAt);
+    const isMine = email === authService.currentUser?.email;
 
     return (
-        <ChatItemStyled className={showProfile ? "first" : ""}>
+        <ChatItemStyled
+            className={`${showProfile ? "first" : ""} ${isMine ? "mine" : ""}`}
+        >
             {showProfile ? (
                 <ProfileStyled>
                     <button>
