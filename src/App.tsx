@@ -16,6 +16,8 @@ function App() {
 
             setIsLogin(!!user);
             setIsLoaded(true);
+
+            console.log(authService.currentUser);
         });
     }, []);
 
