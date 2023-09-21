@@ -7,17 +7,15 @@ import {
 } from "firebase/auth";
 
 const AccountModalStyled = styled.div`
-    position: relative;
     border-radius: 0.5rem;
     box-shadow: 0 0 4px 0 rgba(17, 22, 26, 0.16),
         0 2px 4px 0 rgba(17, 22, 26, 0.08), 0 4px 8px 0 rgba(17, 22, 26, 0.08);
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+
     width: 80%;
     max-width: 400px;
     padding: 2rem;
     display: flex;
+    align-self: center;
     flex-direction: column;
     row-gap: 1rem;
 
@@ -87,17 +85,13 @@ const GithubAccountButtonStyled = styled.button`
 `;
 
 function AccountModal() {
-    async function handleAccountClick(social: "google" | "github") {
-        let provider = null;
+    const accountProvider = {
+        google: new GoogleAuthProvider(),
+        github: new GithubAuthProvider(),
+    };
 
-        if (social === "google") {
-            provider = new GoogleAuthProvider();
-        } else {
-            provider = new GithubAuthProvider();
-        }
-
-        await signInWithPopup(authService, provider);
-    }
+    const handleAccountClick = (social: "google" | "github") =>
+        signInWithPopup(authService, accountProvider[social]);
 
     return (
         <AccountModalStyled>

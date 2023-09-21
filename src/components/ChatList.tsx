@@ -41,10 +41,10 @@ const ListStyled = styled.ul`
 `;
 
 type QueryType = "basic" | "before";
+const LIMIT = 50;
 
 function ChatList() {
     const db = getFirestore();
-    const LIMIT = 50;
 
     const beforeDocument = useRef<null | QueryDocumentSnapshot<DocumentData>>(
         null,
