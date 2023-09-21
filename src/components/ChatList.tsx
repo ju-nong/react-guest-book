@@ -45,11 +45,12 @@ const LIMIT = 50;
 
 function ChatList() {
     const db = getFirestore();
-
     const beforeDocument = useRef<null | QueryDocumentSnapshot<DocumentData>>(
         null,
     );
+
     const [chats, setChats] = useState<Chat[]>([]);
+    const $list = useRef<HTMLUListElement>(null);
 
     useEffect(() => {
         const unsubscribe = onSnapshot(getQuery("basic"), (snapshot) => {
@@ -95,10 +96,20 @@ function ChatList() {
             }
         });
 
+        if ($list.current) {
+            $list.current.scrollTop = $list.current.scrollHeight;
+        }
+
         return () => {
             unsubscribe();
         };
     }, []);
+
+    useEffect(() => {
+        if ($list.current) {
+            $list.current.scrollTop = $list.current.scrollHeight;
+        }
+    }, [chats]);
 
     function getQuery(type: QueryType) {
         switch (type) {
@@ -142,7 +153,7 @@ function ChatList() {
     return (
         <ChatListContainerStyled>
             <button onClick={getBeforeChat}>이전꺼</button>
-            <ListStyled>
+            <ListStyled ref={$list}>
                 {chats.map((chat, index) => (
                     <ChatItem
                         key={chat.id}
