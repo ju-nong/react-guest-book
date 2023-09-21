@@ -73,13 +73,14 @@ function ChatInput() {
         const { value } = event.target as HTMLTextAreaElement;
 
         setText(value.trim());
-        console.log(value.trim().length);
     }
 
     async function addChat() {
-        if ($textarea.current) {
-            $textarea.current.value = "";
-        }
+        setTimeout(() => {
+            if ($textarea.current) {
+                $textarea.current.value = "";
+            }
+        }, 0);
 
         try {
             const createAt = new Date();
