@@ -33,10 +33,11 @@ const ListStyled = styled.ul`
     list-style: none;
     overflow-anchor: none;
     overscroll-behavior: none;
-    height: 100%;
+    height: calc(100% - 20px);
     overflow-y: scroll;
     overflow-x: hidden;
-    padding: 0px 16px;
+    padding: 0px 16px 8px 16px;
+    margin-bottom: 20px;
 `;
 
 type QueryType = "basic" | "before";

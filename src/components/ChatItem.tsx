@@ -29,6 +29,7 @@ const ChatItemStyled = styled.li`
 
         > p {
             order: 2;
+            text-align: right;
         }
 
         > span {
