@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 
 import styled from "@emotion/styled";
-import { ChatItem } from ".";
+import { ChatItem, ChatNewNotice } from ".";
 
 import {
     getFirestore,
@@ -19,6 +19,7 @@ import {
 import { Chat } from "../types";
 
 const ChatListContainerStyled = styled.div`
+    position: relative;
     overflow: hidden;
     flex: 1;
     width: 100%;
@@ -43,14 +44,35 @@ const ListStyled = styled.ul`
 type QueryType = "basic" | "before";
 const LIMIT = 50;
 
-function ChatList() {
+type ChatListProps = {
+    triggerAddChat: number;
+};
+
+function ChatList({ triggerAddChat }: ChatListProps) {
     const db = getFirestore();
     const beforeDocument = useRef<null | QueryDocumentSnapshot<DocumentData>>(
         null,
     );
 
     const [chats, setChats] = useState<Chat[]>([]);
-    const $list = useRef<HTMLUListElement>(null);
+    const [newChat, setNewChat] = useState<Chat | null>(null);
+    function getQuery(type: QueryType) {
+        switch (type) {
+            case "basic":
+                return query(
+                    collection(db, "chat"),
+                    orderBy("createAt", "desc"),
+                    limit(LIMIT),
+                );
+            case "before":
+                return query(
+                    collection(db, "chat"),
+                    orderBy("createAt", "desc"),
+                    startAfter(beforeDocument.current),
+                    limit(LIMIT),
+                );
+        }
+    }
 
     useEffect(() => {
         const unsubscribe = onSnapshot(getQuery("basic"), (snapshot) => {
@@ -96,36 +118,43 @@ function ChatList() {
             }
         });
 
-        if ($list.current) {
-            $list.current.scrollTop = $list.current.scrollHeight;
-        }
-
         return () => {
             unsubscribe();
         };
     }, []);
 
+    const $list = useRef<HTMLUListElement>(null);
+    const beforeScrollTop = useRef(-1);
+    const cloneTriggerAddChart = useRef(false);
+
+    useEffect(() => {
+        if (triggerAddChat) {
+            cloneTriggerAddChart.current = true;
+        }
+    }, [triggerAddChat]);
+
     useEffect(() => {
         if ($list.current) {
-            $list.current.scrollTop = $list.current.scrollHeight;
+            const { scrollTop, scrollHeight } = $list.current;
+
+            // 처음 들어오거나 사용자가 입력 했을 때
+            if (beforeScrollTop.current < 0 || cloneTriggerAddChart.current) {
+                $list.current.scrollTop = scrollHeight;
+                cloneTriggerAddChart.current = false;
+            } else if (beforeScrollTop.current === scrollTop) {
+                $list.current.scrollTop = scrollHeight;
+            } else {
+                setNewChat(chats.at(-1) || null);
+            }
+
+            beforeScrollTop.current = $list.current.scrollTop;
         }
     }, [chats]);
 
-    function getQuery(type: QueryType) {
-        switch (type) {
-            case "basic":
-                return query(
-                    collection(db, "chat"),
-                    orderBy("createAt", "desc"),
-                    limit(LIMIT),
-                );
-            case "before":
-                return query(
-                    collection(db, "chat"),
-                    orderBy("createAt", "desc"),
-                    startAfter(beforeDocument.current),
-                    limit(LIMIT),
-                );
+    // 맨 하단으로 이동
+    function handleMoveRecent() {
+        if ($list.current) {
+            $list.current.scrollTop = $list.current.scrollHeight;
         }
     }
 
@@ -163,6 +192,7 @@ function ChatList() {
                     />
                 ))}
             </ListStyled>
+            <ChatNewNotice chat={newChat} onMoveRecent={handleMoveRecent} />
         </ChatListContainerStyled>
     );
 }

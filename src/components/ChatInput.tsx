@@ -58,7 +58,11 @@ const SendButtonStyled = styled.button`
     }
 `;
 
-function ChatInput() {
+type ChatInputProps = {
+    onTriggerAddChat: () => void;
+};
+
+function ChatInput({ onTriggerAddChat }: ChatInputProps) {
     const db = getFirestore();
     const { currentUser } = authService;
     const { displayName: name, email, photoURL: profile } = currentUser!;
@@ -76,6 +80,8 @@ function ChatInput() {
     }
 
     async function addChat() {
+        onTriggerAddChat();
+
         setTimeout(() => {
             if ($textarea.current) {
                 $textarea.current.value = "";
