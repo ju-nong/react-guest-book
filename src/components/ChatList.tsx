@@ -18,20 +18,32 @@ import {
 
 import { Chat } from "../types";
 
-const ChatListStyled = styled.ul`
+const ChatListContainerStyled = styled.div`
+    overflow: hidden;
+    flex: 1;
     width: 100%;
     min-width: 320px;
+`;
+
+const ListStyled = styled.ul`
+    width: 100%;
     display: flex;
     flex-direction: column;
     row-gap: 4px;
     list-style: none;
+    overflow-anchor: none;
+    overscroll-behavior: none;
+    height: 100%;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    padding: 0px 16px;
 `;
 
 type QueryType = "basic" | "before";
 
 function ChatList() {
     const db = getFirestore();
-    const LIMIT = 20;
+    const LIMIT = 50;
 
     const beforeDocument = useRef<null | QueryDocumentSnapshot<DocumentData>>(
         null,
@@ -127,9 +139,9 @@ function ChatList() {
     }
 
     return (
-        <>
+        <ChatListContainerStyled>
             <button onClick={getBeforeChat}>이전꺼</button>
-            <ChatListStyled>
+            <ListStyled>
                 {chats.map((chat, index) => (
                     <ChatItem
                         key={chat.id}
@@ -138,8 +150,8 @@ function ChatList() {
                         afterChat={chats[index + 1] || null}
                     />
                 ))}
-            </ChatListStyled>
-        </>
+            </ListStyled>
+        </ChatListContainerStyled>
     );
 }
 

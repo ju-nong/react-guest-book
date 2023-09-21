@@ -2,7 +2,11 @@ import { ChatList, ChatInput } from ".";
 import styled from "@emotion/styled";
 
 const ChatContainerStyled = styled.main`
-    padding: 0px 16px;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    max-width: 740px;
 `;
 
 function ChatContainer() {
