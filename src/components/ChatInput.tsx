@@ -81,6 +81,8 @@ function ChatInput({ onTriggerAddChat }: ChatInputProps) {
         setText(value.trim());
     }
 
+    console.log(SHA512(email!).toString());
+
     async function addChat() {
         onTriggerAddChat();
 

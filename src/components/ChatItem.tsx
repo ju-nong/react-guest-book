@@ -101,12 +101,10 @@ function ChatItem({ chat, beforeChat, afterChat }: ChatItemProps) {
     const { email, text, name, profile, createAt } = chat;
     const formatCreateAt = formatDate(createAt);
 
-    const enEmail = SHA512(email).toString();
-
-    const showProfile = beforeChat === null || enEmail !== beforeChat.email;
+    const showProfile = beforeChat === null || email !== beforeChat.email;
     const showDate =
         afterChat === null || formatCreateAt !== formatDate(afterChat.createAt);
-    const isMine = enEmail === authService.currentUser?.email;
+    const isMine = email === SHA512(authService.currentUser?.email!).toString();
 
     return (
         <ChatItemStyled
