@@ -67,9 +67,7 @@ function ChatNewNotice({ chat, onMoveRecent }: ChatNewNoticeProps) {
     const [isShow, setIsShow] = useState(false);
 
     useEffect(() => {
-        if (chat) {
-            setIsShow(true);
-        }
+        setIsShow(!!chat);
     }, [chat]);
 
     // 숨기고 맨 하단으로 이동

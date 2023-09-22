@@ -125,6 +125,7 @@ function ChatList({ triggerAddChat }: ChatListProps) {
 
     const $list = useRef<HTMLUListElement>(null);
     const beforeScrollTop = useRef(-1);
+    const isScrolledToBottom = useRef(false);
     const cloneTriggerAddChart = useRef(false);
 
     useEffect(() => {
@@ -179,10 +180,20 @@ function ChatList({ triggerAddChat }: ChatListProps) {
         }
     }
 
+    function handleScroll() {
+        const { scrollTop, clientHeight, scrollHeight } = $list.current!;
+
+        isScrolledToBottom.current = scrollTop + clientHeight >= scrollHeight;
+
+        if (!isScrolledToBottom.current) {
+            setNewChat(null);
+        }
+    }
+
     return (
         <ChatListContainerStyled>
             <button onClick={getBeforeChat}>이전꺼</button>
-            <ListStyled ref={$list}>
+            <ListStyled ref={$list} onScroll={handleScroll}>
                 {chats.map((chat, index) => (
                     <ChatItem
                         key={chat.id}

@@ -6,6 +6,8 @@ import { useOutside } from "../utils";
 import { authService } from "../firebase";
 import { getFirestore, collection, addDoc } from "firebase/firestore";
 
+import { SHA512 } from "crypto-js";
+
 const ChatInputContainerStyled = styled.div`
     display: flex;
     border-top: 0.5px solid rgba(0, 0, 0, 0.1);
@@ -92,8 +94,8 @@ function ChatInput({ onTriggerAddChat }: ChatInputProps) {
             const createAt = new Date();
 
             await addDoc(collection(db, "chat"), {
+                email: SHA512(email!).toString(),
                 createAt,
-                email,
                 name,
                 profile,
                 text,

@@ -6,6 +6,8 @@ import { authService } from "../firebase";
 import { Chat } from "../types";
 import { Timestamp } from "firebase/firestore";
 
+import { SHA512 } from "crypto-js";
+
 const ChatItemStyled = styled.li`
     width: 100%;
     padding-left: 32px;
@@ -99,10 +101,12 @@ function ChatItem({ chat, beforeChat, afterChat }: ChatItemProps) {
     const { email, text, name, profile, createAt } = chat;
     const formatCreateAt = formatDate(createAt);
 
-    const showProfile = beforeChat === null || email !== beforeChat.email;
+    const enEmail = SHA512(email).toString();
+
+    const showProfile = beforeChat === null || enEmail !== beforeChat.email;
     const showDate =
         afterChat === null || formatCreateAt !== formatDate(afterChat.createAt);
-    const isMine = email === authService.currentUser?.email;
+    const isMine = enEmail === authService.currentUser?.email;
 
     return (
         <ChatItemStyled
