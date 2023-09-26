@@ -124,31 +124,35 @@ function ChatList({ triggerAddChat }: ChatListProps) {
     }, []);
 
     const $list = useRef<HTMLUListElement>(null);
-    const beforeScrollTop = useRef(-1);
+    const init = useRef(true);
     const isScrolledToBottom = useRef(false);
-    const cloneTriggerAddChart = useRef(false);
+    const cloneTriggerAddChat = useRef(false);
 
     useEffect(() => {
         if (triggerAddChat) {
-            cloneTriggerAddChart.current = true;
+            cloneTriggerAddChat.current = true;
         }
     }, [triggerAddChat]);
 
     useEffect(() => {
-        if ($list.current) {
-            const { scrollTop, scrollHeight } = $list.current;
+        if ($list.current && chats.length) {
+            const { scrollHeight } = $list.current;
 
-            // 처음 들어오거나 사용자가 입력 했을 때
-            if (beforeScrollTop.current < 0 || cloneTriggerAddChart.current) {
+            // init이거나 입력 했을 때
+            if (init.current || cloneTriggerAddChat.current) {
                 $list.current.scrollTop = scrollHeight;
-                cloneTriggerAddChart.current = false;
-            } else if (beforeScrollTop.current === scrollTop) {
+
+                init.current = false;
+                cloneTriggerAddChat.current = false;
+
+                setNewChat(null);
+            } else if (isScrolledToBottom.current) {
+                // 맨 하단일 때
                 $list.current.scrollTop = scrollHeight;
             } else {
+                // 중간일 때
                 setNewChat(chats.at(-1) || null);
             }
-
-            beforeScrollTop.current = $list.current.scrollTop;
         }
     }, [chats]);
 
@@ -183,9 +187,10 @@ function ChatList({ triggerAddChat }: ChatListProps) {
     function handleScroll() {
         const { scrollTop, clientHeight, scrollHeight } = $list.current!;
 
-        isScrolledToBottom.current = scrollTop + clientHeight >= scrollHeight;
+        isScrolledToBottom.current =
+            scrollHeight - clientHeight - 50 <= scrollTop;
 
-        if (!isScrolledToBottom.current) {
+        if (isScrolledToBottom.current) {
             setNewChat(null);
         }
     }
