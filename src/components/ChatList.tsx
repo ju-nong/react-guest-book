@@ -161,8 +161,9 @@ function ChatList({ triggerAddChat }: ChatListProps) {
     const init = useRef(true);
     const isScrolledToBottom = useRef(false); // 맨 하단인지
     const cloneTriggerAddChat = useRef(false); // 채팅 추가 Trigger
-    const triggerNewBeforeChat = useRef(false); // 이전 채팅 추가 Trigger
+    const [newBeforeChat, setNewBeforeChat] = useState(false); // 이전 채팅 추가 Trigger
     const prevScrollHeight = useRef(0); // 이전 scrollHeight
+    const isEnd = useRef(false); // 마지막 대화인지
 
     useEffect(() => {
         if (triggerAddChat) {
@@ -185,9 +186,9 @@ function ChatList({ triggerAddChat }: ChatListProps) {
             } else if (isScrolledToBottom.current) {
                 // 맨 하단일 때
                 $list.current.scrollTop = scrollHeight;
-            } else if (triggerNewBeforeChat.current) {
+            } else if (newBeforeChat) {
                 // 이전 채팅 추가 됐을 때
-                triggerNewBeforeChat.current = false;
+                setNewBeforeChat(false);
 
                 $list.current.scrollTop =
                     scrollHeight - prevScrollHeight.current;
@@ -221,8 +222,10 @@ function ChatList({ triggerAddChat }: ChatListProps) {
             ]);
 
             beforeDocument.current = reversedBeforeChats[0];
-            triggerNewBeforeChat.current = true;
         } else {
+            isEnd.current = true;
+            setNewBeforeChat(false);
+
             alert("마지막입니다");
         }
     }
@@ -238,7 +241,8 @@ function ChatList({ triggerAddChat }: ChatListProps) {
             setNewChat(null);
         }
 
-        if (!scrollTop && !init.current) {
+        if (!scrollTop && !init.current && !isEnd.current) {
+            setNewBeforeChat(true);
             prevScrollHeight.current = scrollHeight;
             getBeforeChat();
         }
@@ -247,7 +251,7 @@ function ChatList({ triggerAddChat }: ChatListProps) {
     return (
         <ChatListContainerStyled>
             <ListStyled ref={$list} onScroll={handleScroll}>
-                {triggerNewBeforeChat ? <LoaderStyled /> : null}
+                {newBeforeChat ? <LoaderStyled /> : null}
                 {chats.map((chat, index) => (
                     <ChatItem
                         key={chat.id}
