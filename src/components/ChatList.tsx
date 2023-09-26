@@ -59,7 +59,20 @@ const ListStyled = styled.ul`
     height: 100%;
     overflow-y: scroll;
     overflow-x: hidden;
-    padding: 0px 16px 8px 16px;
+    padding: 0px 8px 8px 16px;
+
+    &::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: rgb(204, 204, 204);
+        border-radius: 10px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background-color: transparent;
+    }
 `;
 
 type QueryType = "basic" | "before";
