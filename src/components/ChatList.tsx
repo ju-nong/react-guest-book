@@ -26,6 +26,28 @@ const ChatListContainerStyled = styled.div`
     min-width: 320px;
 `;
 
+const LoaderStyled = styled.li`
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    padding: 15px;
+    margin-top: 16px;
+    position: relative;
+    animation: rotate 1s linear infinite;
+    display: inline-block;
+    align-self: center;
+
+    &::before {
+        content: "";
+        box-sizing: border-box;
+        position: absolute;
+        inset: 0px;
+        border-radius: 50%;
+        border: 3px solid rgb(222, 225, 229);
+        animation: prixClipFix 2s linear infinite;
+    }
+`;
+
 const ListStyled = styled.ul`
     width: 100%;
     display: flex;
@@ -34,11 +56,10 @@ const ListStyled = styled.ul`
     list-style: none;
     overflow-anchor: none;
     overscroll-behavior: none;
-    height: calc(100% - 20px);
+    height: 100%;
     overflow-y: scroll;
     overflow-x: hidden;
     padding: 0px 16px 8px 16px;
-    margin-bottom: 20px;
 `;
 
 type QueryType = "basic" | "before";
@@ -125,8 +146,10 @@ function ChatList({ triggerAddChat }: ChatListProps) {
 
     const $list = useRef<HTMLUListElement>(null);
     const init = useRef(true);
-    const isScrolledToBottom = useRef(false);
-    const cloneTriggerAddChat = useRef(false);
+    const isScrolledToBottom = useRef(false); // 맨 하단인지
+    const cloneTriggerAddChat = useRef(false); // 채팅 추가 Trigger
+    const triggerNewBeforeChat = useRef(false); // 이전 채팅 추가 Trigger
+    const prevScrollHeight = useRef(0); // 이전 scrollHeight
 
     useEffect(() => {
         if (triggerAddChat) {
@@ -149,6 +172,12 @@ function ChatList({ triggerAddChat }: ChatListProps) {
             } else if (isScrolledToBottom.current) {
                 // 맨 하단일 때
                 $list.current.scrollTop = scrollHeight;
+            } else if (triggerNewBeforeChat.current) {
+                // 이전 채팅 추가 됐을 때
+                triggerNewBeforeChat.current = false;
+
+                $list.current.scrollTop =
+                    scrollHeight - prevScrollHeight.current;
             } else {
                 // 중간일 때
                 setNewChat(chats.at(-1) || null);
@@ -179,6 +208,7 @@ function ChatList({ triggerAddChat }: ChatListProps) {
             ]);
 
             beforeDocument.current = reversedBeforeChats[0];
+            triggerNewBeforeChat.current = true;
         } else {
             alert("마지막입니다");
         }
@@ -190,15 +220,21 @@ function ChatList({ triggerAddChat }: ChatListProps) {
         isScrolledToBottom.current =
             scrollHeight - clientHeight - 50 <= scrollTop;
 
+        // 맨 하단일 때
         if (isScrolledToBottom.current) {
             setNewChat(null);
+        }
+
+        if (!scrollTop && !init.current) {
+            prevScrollHeight.current = scrollHeight;
+            getBeforeChat();
         }
     }
 
     return (
         <ChatListContainerStyled>
-            <button onClick={getBeforeChat}>이전꺼</button>
             <ListStyled ref={$list} onScroll={handleScroll}>
+                {triggerNewBeforeChat ? <LoaderStyled /> : null}
                 {chats.map((chat, index) => (
                     <ChatItem
                         key={chat.id}
