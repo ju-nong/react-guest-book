@@ -95,7 +95,7 @@ function AccountModal() {
 
     return (
         <AccountModalStyled>
-            <TitleStyled>react-guest-book</TitleStyled>
+            <TitleStyled>junong-guest-book</TitleStyled>
             <DescriptionStyled>
                 방명록을 이용하시려면 로그인을 해주세요.
             </DescriptionStyled>
