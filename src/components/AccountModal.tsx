@@ -1,9 +1,11 @@
+import { useEffect } from "react"; // 1. useEffect 추가
 import styled from "@emotion/styled";
 import { authService } from "../firebase";
 import {
     GoogleAuthProvider,
     GithubAuthProvider,
-    signInWithPopup,
+    signInWithRedirect, // 2. signInWithPopup 대신 리다이렉트 임포트
+    getRedirectResult,   // 3. 리다이렉트 결과를 받아올 함수 임포트
 } from "firebase/auth";
 
 const AccountModalStyled = styled.div`
@@ -90,8 +92,26 @@ function AccountModal() {
         github: new GithubAuthProvider(),
     };
 
+    // 4. 리다이렉트 후 다시 이 페이지로 돌아왔을 때 로그인 결과를 감지하는 로직
+    useEffect(() => {
+        getRedirectResult(authService)
+            .then((result) => {
+                if (result) {
+                    // 로그인 성공! 유저 정보는 result.user에 들어있습니다.
+                    const user = result.user;
+                    console.log("로그인 성공 유저:", user);
+                    
+                    // TODO: 여기에 로그인 성공 후 메인 페이지 이동이나 모달 닫기 등 후속 로직을 작성하세요.
+                }
+            })
+            .catch((error) => {
+                console.error("리다이렉트 로그인 에러:", error);
+            });
+    }, []);
+
+    // 5. signInWithPopup -> signInWithRedirect 로 변경
     const handleAccountClick = (social: "google" | "github") =>
-        signInWithPopup(authService, accountProvider[social]);
+        signInWithRedirect(authService, accountProvider[social]);
 
     return (
         <AccountModalStyled>
