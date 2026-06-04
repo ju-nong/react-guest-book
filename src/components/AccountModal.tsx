@@ -1,140 +1,123 @@
-import { useEffect } from "react"; // 1. useEffect 추가
 import styled from "@emotion/styled";
 import { authService } from "../firebase";
 import {
-    GoogleAuthProvider,
-    GithubAuthProvider,
-    signInWithRedirect, // 2. signInWithPopup 대신 리다이렉트 임포트
-    getRedirectResult,   // 3. 리다이렉트 결과를 받아올 함수 임포트
+	GoogleAuthProvider,
+	GithubAuthProvider,
+	signInWithPopup,
 } from "firebase/auth";
 
 const AccountModalStyled = styled.div`
-    border-radius: 0.5rem;
-    box-shadow: 0 0 4px 0 rgba(17, 22, 26, 0.16),
-        0 2px 4px 0 rgba(17, 22, 26, 0.08), 0 4px 8px 0 rgba(17, 22, 26, 0.08);
+	border-radius: 0.5rem;
+	box-shadow:
+		0 0 4px 0 rgba(17, 22, 26, 0.16),
+		0 2px 4px 0 rgba(17, 22, 26, 0.08),
+		0 4px 8px 0 rgba(17, 22, 26, 0.08);
 
-    width: 80%;
-    max-width: 400px;
-    padding: 2rem;
-    display: flex;
-    align-self: center;
-    flex-direction: column;
-    row-gap: 1rem;
+	width: 80%;
+	max-width: 400px;
+	padding: 2rem;
+	display: flex;
+	align-self: center;
+	flex-direction: column;
+	row-gap: 1rem;
 
-    @media screen and (max-width: 466px) {
-        padding: 2rem 1rem;
-    }
+	@media screen and (max-width: 466px) {
+		padding: 2rem 1rem;
+	}
 `;
 
 const TitleStyled = styled.h1`
-    text-align: center;
+	text-align: center;
 
-    @media screen and (max-width: 466px) {
-        font-size: 6.5vw;
-    }
+	@media screen and (max-width: 466px) {
+		font-size: 6.5vw;
+	}
 `;
 
 const DescriptionStyled = styled.p`
-    text-align: center;
+	text-align: center;
 
-    @media screen and (max-width: 466px) {
-        font-size: 3vw;
-    }
+	@media screen and (max-width: 466px) {
+		font-size: 3vw;
+	}
 `;
 
 const ButtonContainerStyled = styled.div`
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: center;
-    row-gap: 1rem;
-    padding-top: 2rem;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: center;
+	row-gap: 1rem;
+	padding-top: 2rem;
 
-    > button {
-        box-shadow: 0 0 8px 0 rgba(17, 22, 26, 0.16),
-            0 4px 8px 0 rgba(17, 22, 26, 0.08),
-            0 8px 16px 0 rgba(17, 22, 26, 0.08);
-        cursor: pointer;
-        font-family: Roboto;
-        width: 240px;
-        height: 50px;
-        display: flex;
-        column-gap: 4px;
-        align-items: center;
-        justify-content: center;
-        padding: 6px 24px;
-        font-size: 1rem;
-        color: rgba(75, 85, 99);
+	> button {
+		box-shadow:
+			0 0 8px 0 rgba(17, 22, 26, 0.16),
+			0 4px 8px 0 rgba(17, 22, 26, 0.08),
+			0 8px 16px 0 rgba(17, 22, 26, 0.08);
+		cursor: pointer;
+		font-family: Roboto;
+		width: 240px;
+		height: 50px;
+		display: flex;
+		column-gap: 4px;
+		align-items: center;
+		justify-content: center;
+		padding: 6px 24px;
+		font-size: 1rem;
+		color: rgba(75, 85, 99);
 
-        > img {
-            height: 100%;
-        }
-    }
+		> img {
+			height: 100%;
+		}
+	}
 
-    @media screen and (max-width: 400px) {
-        > button {
-            font-size: 4vw;
-        }
-    }
+	@media screen and (max-width: 400px) {
+		> button {
+			font-size: 4vw;
+		}
+	}
 `;
 
 const GoogleAccountButtonStyled = styled.button`
-    background-color: #fff;
+	background-color: #fff;
 `;
 
 const GithubAccountButtonStyled = styled.button`
-    background-color: #fff;
+	background-color: #fff;
 `;
 
+const accountProvider = {
+	google: new GoogleAuthProvider(),
+	github: new GithubAuthProvider(),
+};
+
 function AccountModal() {
-    const accountProvider = {
-        google: new GoogleAuthProvider(),
-        github: new GithubAuthProvider(),
-    };
+	const handleAccountClick = (social: "google" | "github") =>
+		signInWithPopup(authService, accountProvider[social]);
 
-    // 4. 리다이렉트 후 다시 이 페이지로 돌아왔을 때 로그인 결과를 감지하는 로직
-    useEffect(() => {
-        getRedirectResult(authService)
-            .then((result) => {
-                if (result) {
-                    // 로그인 성공! 유저 정보는 result.user에 들어있습니다.
-                    const user = result.user;
-                    console.log("로그인 성공 유저:", user);
-                    
-                    // TODO: 여기에 로그인 성공 후 메인 페이지 이동이나 모달 닫기 등 후속 로직을 작성하세요.
-                }
-            })
-            .catch((error) => {
-                console.error("리다이렉트 로그인 에러:", error);
-            });
-    }, []);
-
-    // 5. signInWithPopup -> signInWithRedirect 로 변경
-    const handleAccountClick = (social: "google" | "github") =>
-        signInWithRedirect(authService, accountProvider[social]);
-
-    return (
-        <AccountModalStyled>
-            <TitleStyled>junong-guest-book</TitleStyled>
-            <DescriptionStyled>
-                방명록을 이용하시려면 로그인을 해주세요.
-            </DescriptionStyled>
-            <ButtonContainerStyled>
-                <GoogleAccountButtonStyled
-                    onClick={() => handleAccountClick("google")}
-                >
-                    <img src="/images/google-logo.png" alt="Google Logo" />
-                    Sign in with Google
-                </GoogleAccountButtonStyled>
-                <GithubAccountButtonStyled
-                    onClick={() => handleAccountClick("github")}
-                >
-                    <img src="/images/github-logo.png" alt="Github Logo" />
-                    Sign in with Github
-                </GithubAccountButtonStyled>
-            </ButtonContainerStyled>
-        </AccountModalStyled>
-    );
+	return (
+		<AccountModalStyled>
+			<TitleStyled>junong-guest-book</TitleStyled>
+			<DescriptionStyled>
+				방명록을 이용하시려면 로그인을 해주세요.
+			</DescriptionStyled>
+			<ButtonContainerStyled>
+				<GoogleAccountButtonStyled
+					onClick={() => handleAccountClick("google")}
+				>
+					<img src="/images/google-logo.png" alt="Google Logo" />
+					Sign in with Google
+				</GoogleAccountButtonStyled>
+				<GithubAccountButtonStyled
+					onClick={() => handleAccountClick("github")}
+				>
+					<img src="/images/github-logo.png" alt="Github Logo" />
+					Sign in with Github
+				</GithubAccountButtonStyled>
+			</ButtonContainerStyled>
+		</AccountModalStyled>
+	);
 }
 
 export { AccountModal };
